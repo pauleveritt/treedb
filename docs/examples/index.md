@@ -6,4 +6,6 @@
 hidden: true
 ---
 starting
+assignment
+ref
 ```

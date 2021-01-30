@@ -3,6 +3,7 @@ import pytest
 from examples import (
     starting,
     assignment,
+    ref,
 )
 
 
@@ -11,8 +12,9 @@ from examples import (
     [
         starting,
         assignment,
+        ref,
     ],
 )
 def test_examples(target):
     expected, actual = target.run()
-    assert expected == actual
+    assert actual == expected

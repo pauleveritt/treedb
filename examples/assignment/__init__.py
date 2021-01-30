@@ -6,6 +6,7 @@ from dataclasses import dataclass
 class Root:
     title: str
 
+
 # Just to emphasize, we make these "immutable"
 @dataclass(frozen=True)
 class RootView:
