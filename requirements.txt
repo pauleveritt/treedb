@@ -1,0 +1,4 @@
+pytest
+Sphinx
+sphinx-book-theme
+myst-parser
