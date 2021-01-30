@@ -4,6 +4,8 @@ from examples import (
     starting,
     assignment,
     ref,
+    tree,
+    view_instances,
 )
 
 
@@ -13,6 +15,8 @@ from examples import (
         starting,
         assignment,
         ref,
+        tree,
+        view_instances,
     ],
 )
 def test_examples(target):
