@@ -15,7 +15,7 @@ This gives us what we're looking for: views are pre-rendered, and updated on res
 ```{literalinclude} ../../examples/push/directives.py
 ```
 
-And now the "site" code:
+In the site code you can see the sequence of startup, requests, and state changes.
 
 ```{literalinclude} ../../examples/push/__init__.py
 ```

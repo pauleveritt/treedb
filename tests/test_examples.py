@@ -11,6 +11,7 @@ from examples import (
     more_subtrees,
     vdom,
     push,
+    push_vdom,
 )
 
 
@@ -27,6 +28,7 @@ from examples import (
         more_subtrees,
         vdom,
         push,
+        push_vdom,
     ],
 )
 def test_examples(target):
