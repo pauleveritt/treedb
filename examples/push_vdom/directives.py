@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-
 # 1. Directive bases
+from typing import Sequence
+
+
 @dataclass(frozen=True)
 class Ref:
     tree: Tree
@@ -64,21 +66,8 @@ class Tree:
             if ref.to == resource_name
         ]
 
-        # 3. Find any views that use that ref
-        changed_views = [
-            view
-            for view in self.views.items.values()
-            if view.ref.to in changed_ref_tos
-        ]
-
-        for changed_view in changed_views:
-            # Later, we'll move this responsibility to the
-            # ``ViewSubtree`.
-            view_name = changed_view.name
-            if view_name in self.views.renderings:
-                # Clear it if in the "cache"
-                del self.views.renderings[view_name]
-            self.views.render(view_name)
+        # 3. Update any views that use those refs
+        self.views.update_views(changed_ref_tos)
 
 
 @dataclass
@@ -133,3 +122,22 @@ class ViewSubtree:
 
     def set(self, item: View):
         self.items[item.name] = item
+
+    def update_views(self, changed_refs: Sequence[str]):
+        """ Given a list of changed refs, update the views """
+
+        # 3. Find any views that use that ref
+        changed_views = [
+            view
+            for view in self.items.values()
+            if view.ref.to in changed_refs
+        ]
+
+        for changed_view in changed_views:
+            # Later, we'll move this responsibility to the
+            # ``ViewSubtree`.
+            view_name = changed_view.name
+            if view_name in self.renderings:
+                # Clear it if in the "cache"
+                del self.renderings[view_name]
+            self.render(view_name)
