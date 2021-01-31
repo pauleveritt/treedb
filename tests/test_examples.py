@@ -6,6 +6,7 @@ from examples import (
     ref,
     tree,
     view_instances,
+    ref_instances,
 )
 
 
@@ -17,6 +18,7 @@ from examples import (
         ref,
         tree,
         view_instances,
+        ref_instances,
     ],
 )
 def test_examples(target):
