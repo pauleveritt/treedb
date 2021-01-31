@@ -20,22 +20,32 @@ class RootView(View):
 def initialize_tree():
     tree = Tree()
 
-    root = Root(name='root', title='My Site')
-    tree.resources.set(root)
+    # Now let's change a resource
+    new_root = Root(name='root', title='My Site')
+    tree.resources.set(new_root)
 
     root_ref = tree.refs.get('root')
     root_view = RootView(name='root_view', ref=root_ref)
     tree.views.set(root_view)
-
     return tree
 
 
 def run():
+    # Startup, load the tree
     tree = initialize_tree()
+
+    # A request comes in, render it, which also (now)
+    # causes the rendered version to get cached.
     result1 = tree.views.render('root_view')
 
+    # The data changes. This causes a push to all the
+    # "subscribers" the use a Ref pointing at this
+    # resource. Remember, we're immutable everywhere.
     new_root = Root(name='root', title='New Site')
-    tree.resources.set(new_root)
+    tree.update(new_root)
+
+    # A request comes in again. The changed view
+    # is already in the cache, so no expensive computation.
     result2 = tree.views.render('root_view')
 
     expected = ('Hello My Site', 'Hello New Site')

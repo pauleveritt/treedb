@@ -48,6 +48,38 @@ class Tree:
         self.resources = ResourceSubtree(tree=self)
         self.views = ViewSubtree(tree=self)
 
+    def update(self, resource: Resource):
+        """ Given a changed resource, propagate the change """
+
+        # Remember, everything is immutable.
+
+        # 1. Update resource tree
+        resource_name = resource.name
+        self.resources.set(resource)
+
+        # 2. Find any refs that point to this resource *name*.
+        changed_ref_tos = [
+            ref.to
+            for ref in self.refs.items.values()
+            if ref.to == resource_name
+        ]
+
+        # 3. Find any views that use that ref
+        changed_views = [
+            view
+            for view in self.views.items.values()
+            if view.ref.to in changed_ref_tos
+        ]
+
+        for changed_view in changed_views:
+            # Later, we'll move this responsibility to the
+            # ``ViewSubtree`.
+            view_name = changed_view.name
+            if view_name in self.views.renderings:
+                # Clear it if in the "cache"
+                del self.views.renderings[view_name]
+            self.views.render(view_name)
+
 
 @dataclass
 class RefSubtree:
@@ -82,15 +114,22 @@ class ResourceSubtree:
 class ViewSubtree:
     tree: Tree
     items: dict[str, View] = field(default_factory=dict)
+    renderings: dict[str, str] = field(default_factory=dict)
 
     def get(self, name: str) -> View:
         return self.items[name]
 
     def render(self, name: str) -> str:
         """ Get and render a view """
-        view = self.items[name]
-        greeting, ref = view()
-        return f'{greeting} {ref()}'
+
+        try:
+            return self.renderings[name]
+        except KeyError:
+            view = self.items[name]
+            greeting, ref = view()
+            rendering = f'{greeting} {ref()}'
+            self.renderings[name] = rendering
+            return rendering
 
     def set(self, item: View):
         self.items[item.name] = item
