@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .directives import Resource, Tree, View, Ref
+from .directives import Resource, Tree, View, Ref, VDOM
 
 
 @dataclass(frozen=True)
@@ -13,8 +13,9 @@ class Root(Resource):
 @dataclass(frozen=True)
 class RootView(View):
 
-    def __call__(self) -> tuple[str, Ref]:
-        return 'Hello', self.ref
+    def __call__(self) -> VDOM:
+        vdom = VDOM(greeting='Hello', ref=self.ref)
+        return vdom
 
 
 def initialize_tree():

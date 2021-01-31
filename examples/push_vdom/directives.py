@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-
 # 1. Directive bases
-from typing import Sequence
+from typing import Sequence, NamedTuple
 
 
 @dataclass(frozen=True)
@@ -27,13 +26,18 @@ class Resource:
     title: str
 
 
+class VDOM(NamedTuple):
+    greeting: str
+    ref: Ref
+
+
 @dataclass(frozen=True)
 class View:
     name: str
     ref: Ref
 
     # Simulate a VDOM with a tuple
-    def __call__(self) -> tuple[str, Ref]:
+    def __call__(self) -> VDOM:
         ...
 
 
@@ -99,11 +103,17 @@ class ResourceSubtree:
         self.items[item.name] = item
 
 
+class Rendering(NamedTuple):
+    """ Hold the rendering of a view """
+    vdom: VDOM
+    result: str
+
+
 @dataclass
 class ViewSubtree:
     tree: Tree
     items: dict[str, View] = field(default_factory=dict)
-    renderings: dict[str, str] = field(default_factory=dict)
+    renderings: dict[str, Rendering] = field(default_factory=dict)
 
     def get(self, name: str) -> View:
         return self.items[name]
@@ -112,13 +122,15 @@ class ViewSubtree:
         """ Get and render a view """
 
         try:
-            return self.renderings[name]
+            rendering = self.renderings[name]
+            return rendering.result
         except KeyError:
             view = self.items[name]
-            greeting, ref = view()
-            rendering = f'{greeting} {ref()}'
+            vdom = view()
+            result = f'{vdom.greeting} {vdom.ref()}'
+            rendering = Rendering(vdom=vdom, result=result)
             self.renderings[name] = rendering
-            return rendering
+            return rendering.result
 
     def set(self, item: View):
         self.items[item.name] = item
