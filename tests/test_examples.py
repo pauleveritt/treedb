@@ -9,6 +9,8 @@ from examples import (
     ref_instances,
     subtrees,
     more_subtrees,
+    vdom,
+    push,
 )
 
 
@@ -23,6 +25,8 @@ from examples import (
         ref_instances,
         subtrees,
         more_subtrees,
+        vdom,
+        push,
     ],
 )
 def test_examples(target):

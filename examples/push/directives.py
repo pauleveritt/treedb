@@ -14,7 +14,9 @@ class Ref:
         return self.to
 
     def __call__(self):
-        return self.tree.resources.get(self.to)
+        r = self.tree.resources.get(self.to)
+        # We are hardwiring in the returning of a particular attr
+        return r.title
 
 
 @dataclass(frozen=True)
@@ -28,7 +30,8 @@ class View:
     name: str
     ref: Ref
 
-    def __call__(self) -> str:
+    # Simulate a VDOM with a tuple
+    def __call__(self) -> tuple[str, Ref]:
         ...
 
 
@@ -82,6 +85,12 @@ class ViewSubtree:
 
     def get(self, name: str) -> View:
         return self.items[name]
+
+    def render(self, name: str) -> str:
+        """ Get and render a view """
+        view = self.items[name]
+        greeting, ref = view()
+        return f'{greeting} {ref()}'
 
     def set(self, item: View):
         self.items[item.name] = item
