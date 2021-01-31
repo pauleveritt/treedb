@@ -7,6 +7,8 @@ from examples import (
     tree,
     view_instances,
     ref_instances,
+    subtrees,
+    more_subtrees,
 )
 
 
@@ -19,6 +21,8 @@ from examples import (
         tree,
         view_instances,
         ref_instances,
+        subtrees,
+        more_subtrees,
     ],
 )
 def test_examples(target):
